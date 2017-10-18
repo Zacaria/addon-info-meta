@@ -1,5 +1,4 @@
 import React from 'react';
-import deprecate from 'util-deprecate';
 import Story from './components/Story';
 import { H1, H2, H3, H4, H5, H6, Code, P, UL, A, LI } from './components/markdown';
 
@@ -63,27 +62,12 @@ function addInfo(storyFn, context, infoOptions) {
   return <Story {...props}>{storyFn(context)}</Story>;
 }
 
-export const withInfo = textOrOptions => {
+export const withMetaInfo = textOrOptions => {
   const options = typeof textOrOptions === 'string' ? { text: textOrOptions } : textOrOptions;
   return storyFn => context => addInfo(storyFn, context, options);
 };
 
 export { Story };
-
-export default {
-  addWithInfo: deprecate(function addWithInfo(storyName, text, storyFn, options) {
-    if (typeof storyFn !== 'function') {
-      if (typeof text === 'function') {
-        options = storyFn; // eslint-disable-line
-        storyFn = text; // eslint-disable-line
-        text = ''; // eslint-disable-line
-      } else {
-        throw new Error('No story defining function has been specified');
-      }
-    }
-    return this.add(storyName, withInfo({ text, ...options })(storyFn));
-  }, '@storybook/addon-info .addWithInfo() addon is deprecated, use withInfo() from the same package instead. \nSee https://github.com/storybooks/storybook/tree/master/addons/info'),
-};
 
 export function setDefaults(newDefaults) {
   return Object.assign(defaultOptions, newDefaults);
