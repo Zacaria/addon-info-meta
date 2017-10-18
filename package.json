@@ -1,0 +1,34 @@
+{
+  "name": "addon-info-meta",
+  "version": "3.2.12",
+  "description": "A Storybook addon to show additional information for your stories.",
+  "license": "MIT",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mbeaudru-mrkl/addon-info-meta.git"
+  },
+  "scripts": {
+    "publish-storybook": "bash .scripts/publish_storybook.sh",
+    "storybook": "start-storybook -p 9010"
+  },
+  "dependencies": {
+    "@storybook/addons": "^3.2.12",
+    "@storybook/components": "^3.2.12",
+    "babel-runtime": "^6.26.0",
+    "global": "^4.3.2",
+    "marksy": "^2.0.0",
+    "prop-types": "^15.6.0",
+    "react-addons-create-fragment": "^15.5.3",
+    "util-deprecate": "^1.0.2"
+  },
+  "devDependencies": {
+    "git-url-parse": "^6.2.2",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-test-renderer": "^16.0.0"
+  },
+  "peerDependencies": {
+    "react": "*"
+  }
+}
