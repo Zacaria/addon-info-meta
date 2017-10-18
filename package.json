@@ -3,12 +3,13 @@
   "version": "3.2.12",
   "description": "A Storybook addon to show additional information for your stories.",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/mbeaudru-mrkl/addon-info-meta.git"
   },
   "scripts": {
+    "prepare": "node ./prepare.js",
     "publish-storybook": "bash .scripts/publish_storybook.sh",
     "storybook": "start-storybook -p 9010"
   },
@@ -23,10 +24,21 @@
     "util-deprecate": "^1.0.2"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "chalk": "^2.2.0",
     "git-url-parse": "^6.2.2",
+    "npmlog": "^4.1.2",
+    "path": "^0.12.7",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-test-renderer": "^16.0.0"
+    "react-test-renderer": "^16.0.0",
+    "shelljs": "^0.7.8",
+    "babel-plugin-transform-md-import-to-string": "^1.0.6",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
   },
   "peerDependencies": {
     "react": "*"
