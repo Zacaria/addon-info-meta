@@ -1,26 +1,12 @@
-import { Prism } from 'global';
 import React from 'react';
 import PropTypes from 'prop-types';
 
 export class Code extends React.Component {
-  componentDidMount() {
-    this.highlight();
-  }
-
-  componentDidUpdate() {
-    this.highlight();
-  }
-
-  highlight() {
-    if (typeof Prism !== 'undefined') {
-      Prism.highlightAll();
-    }
-  }
-
   render() {
     const codeStyle = {
       fontFamily: 'Menlo, Monaco, "Courier New", monospace',
       backgroundColor: '#fafafa',
+      marginBottom: 15
     };
 
     const preStyle = {
@@ -29,6 +15,7 @@ export class Code extends React.Component {
       padding: '.5rem',
       lineHeight: 1.5,
       overflowX: 'scroll',
+      display: 'inline'
     };
 
     const className = this.props.language ? `language-${this.props.language}` : '';
@@ -36,7 +23,7 @@ export class Code extends React.Component {
     return (
       <pre style={preStyle} className={className}>
         <code style={codeStyle} className={className}>
-          {this.props.code}
+          {this.props.children}
         </code>
       </pre>
     );
@@ -61,6 +48,7 @@ export function Pre(props) {
     lineHeight: 1.5,
     overflowX: 'scroll',
   };
+
   return <pre style={style}>{props.children}</pre>;
 }
 

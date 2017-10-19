@@ -29,9 +29,10 @@ var defaultProps = { children: null };
 var propTypes = { children: _propTypes2.default.node };
 
 function P(props) {
-  var style = (0, _extends3.default)({}, _components.baseFonts, {
+  var style = {
+    marginBottom: 8,
     fontSize: '15px'
-  });
+  };
   return _react2.default.createElement(
     'p',
     { style: style },

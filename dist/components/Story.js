@@ -62,6 +62,10 @@ var _global2 = _interopRequireDefault(_global);
 
 var _components = require('@storybook/components');
 
+var _prismjs = require('prismjs');
+
+var _prismjs2 = _interopRequireDefault(_prismjs);
+
 var _marksy = require('marksy');
 
 var _marksy2 = _interopRequireDefault(_marksy);
@@ -70,15 +74,11 @@ var _PropTable = require('./PropTable');
 
 var _PropTable2 = _interopRequireDefault(_PropTable);
 
-var _Node = require('./Node');
+var _reactElementToJsxString = require('react-element-to-jsx-string');
 
-var _Node2 = _interopRequireDefault(_Node);
-
-var _markdown = require('./markdown');
+var _reactElementToJsxString2 = _interopRequireDefault(_reactElementToJsxString);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/* eslint no-underscore-dangle: 0 */
 
 _global2.default.STORYBOOK_REACT_CLASSES = _global2.default.STORYBOOK_REACT_CLASSES || [];
 var STORYBOOK_REACT_CLASSES = _global2.default.STORYBOOK_REACT_CLASSES;
@@ -384,12 +384,12 @@ var Story = function (_React$Component) {
         return null;
       }
 
-      var _props = this.props,
-          maxPropsIntoLine = _props.maxPropsIntoLine,
-          maxPropObjectKeys = _props.maxPropObjectKeys,
-          maxPropArrayLength = _props.maxPropArrayLength,
-          maxPropStringLength = _props.maxPropStringLength;
-
+      var stringifiedJSX = (0, _reactElementToJsxString2.default)(this.props.children, {
+        showDefaultProps: false,
+        showFunctions: true,
+        tabStop: 4,
+        maxInlineAttributesLineLength: 120
+      });
 
       return _react2.default.createElement(
         'div',
@@ -400,18 +400,13 @@ var Story = function (_React$Component) {
           'Story Source'
         ),
         _react2.default.createElement(
-          _markdown.Pre,
-          null,
-          _react2.default.Children.map(this.props.children, function (root, idx) {
-            return _react2.default.createElement(_Node2.default, {
-              key: idx,
-              node: root,
-              depth: 0,
-              maxPropsIntoLine: maxPropsIntoLine,
-              maxPropObjectKeys: maxPropObjectKeys,
-              maxPropArrayLength: maxPropArrayLength,
-              maxPropStringLength: maxPropStringLength
-            });
+          'pre',
+          { className: 'language-jsx' },
+          _react2.default.createElement('code', {
+            className: 'language-jsx',
+            dangerouslySetInnerHTML: {
+              __html: _prismjs2.default.highlight(stringifiedJSX, _prismjs2.default.languages.jsx)
+            }
           })
         )
       );
@@ -467,10 +462,10 @@ var Story = function (_React$Component) {
         return (a.displayName || a.name) > (b.displayName || b.name);
       });
 
-      var _props2 = this.props,
-          maxPropObjectKeys = _props2.maxPropObjectKeys,
-          maxPropArrayLength = _props2.maxPropArrayLength,
-          maxPropStringLength = _props2.maxPropStringLength;
+      var _props = this.props,
+          maxPropObjectKeys = _props.maxPropObjectKeys,
+          maxPropArrayLength = _props.maxPropArrayLength,
+          maxPropStringLength = _props.maxPropStringLength;
 
       var propTables = array.map(function (type) {
         return _react2.default.createElement(

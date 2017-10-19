@@ -71,6 +71,8 @@ function Node(props) {
       maxPropObjectKeys = props.maxPropObjectKeys,
       maxPropArrayLength = props.maxPropArrayLength,
       maxPropStringLength = props.maxPropStringLength;
+
+  console.log(node);
   var tagStyle = stylesheet.tagStyle,
       containerStyle = stylesheet.containerStyle;
 

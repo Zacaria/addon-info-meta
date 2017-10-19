@@ -6,11 +6,11 @@ const defaultProps = { children: null };
 const propTypes = { children: PropTypes.node };
 
 export function P(props) {
-  const style = {
-    ...baseFonts,
-    fontSize: '15px',
-  };
-  return <p style={style}>{props.children}</p>;
+    const style = {
+        marginBottom: 8,
+        fontSize: '15px',
+    };
+    return <p style={style}>{props.children}</p>;
 }
 
 P.defaultProps = defaultProps;

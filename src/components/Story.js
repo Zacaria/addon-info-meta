@@ -1,15 +1,13 @@
-/* eslint no-underscore-dangle: 0 */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import global from 'global';
 import { baseFonts } from '@storybook/components';
-
+import Prism from 'prismjs';
 import marksy from 'marksy';
 
 import PropTable from './PropTable';
-import Node from './Node';
-import { Pre } from './markdown';
+
+import reactElementToJSXString from 'react-element-to-jsx-string';
 
 global.STORYBOOK_REACT_CLASSES = global.STORYBOOK_REACT_CLASSES || [];
 const STORYBOOK_REACT_CLASSES = global.STORYBOOK_REACT_CLASSES;
@@ -251,29 +249,24 @@ export default class Story extends React.Component {
       return null;
     }
 
-    const {
-      maxPropsIntoLine,
-      maxPropObjectKeys,
-      maxPropArrayLength,
-      maxPropStringLength,
-    } = this.props;
+    const stringifiedJSX = reactElementToJSXString(this.props.children, {
+        showDefaultProps: false,
+        showFunctions: true,
+        tabStop: 4,
+        maxInlineAttributesLineLength: 120
+    });
 
     return (
       <div>
         <h1 style={this.state.stylesheet.source.h1}>Story Source</h1>
-        <Pre>
-          {React.Children.map(this.props.children, (root, idx) => (
-            <Node
-              key={idx}
-              node={root}
-              depth={0}
-              maxPropsIntoLine={maxPropsIntoLine}
-              maxPropObjectKeys={maxPropObjectKeys}
-              maxPropArrayLength={maxPropArrayLength}
-              maxPropStringLength={maxPropStringLength}
+          <pre className="language-jsx">
+            <code
+                className="language-jsx"
+                dangerouslySetInnerHTML={{
+                    __html: Prism.highlight(stringifiedJSX, Prism.languages.jsx)
+                }}
             />
-          ))}
-        </Pre>
+          </pre>
       </div>
     );
   }

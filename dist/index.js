@@ -25,6 +25,12 @@ var _Story2 = _interopRequireDefault(_Story);
 
 var _markdown = require('./components/markdown');
 
+var _prismjs = require('prismjs');
+
+var _prismjs2 = _interopRequireDefault(_prismjs);
+
+require('prismjs/components/prism-jsx.min');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var defaultOptions = {
@@ -39,17 +45,23 @@ var defaultOptions = {
 };
 
 var defaultMarksyConf = {
-  h1: _markdown.H1,
-  h2: _markdown.H2,
-  h3: _markdown.H3,
-  h4: _markdown.H4,
-  h5: _markdown.H5,
-  h6: _markdown.H6,
-  code: _markdown.Code,
-  p: _markdown.P,
-  a: _markdown.A,
-  li: _markdown.LI,
-  ul: _markdown.UL
+  createElement: _react2.default.createElement,
+  highlight: function highlight(lang, code) {
+    return _prismjs2.default.highlight(code, _prismjs2.default.languages[lang]);
+  },
+
+  elements: {
+    h1: _markdown.H1,
+    h2: _markdown.H2,
+    h3: _markdown.H3,
+    h4: _markdown.H4,
+    h5: _markdown.H5,
+    h6: _markdown.H6,
+    p: _markdown.P,
+    a: _markdown.A,
+    li: _markdown.LI,
+    ul: _markdown.UL
+  }
 };
 
 function addInfo(storyFn, context, infoOptions) {

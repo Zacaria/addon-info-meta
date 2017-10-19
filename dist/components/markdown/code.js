@@ -28,8 +28,6 @@ var _inherits3 = _interopRequireDefault(_inherits2);
 exports.Pre = Pre;
 exports.Blockquote = Blockquote;
 
-var _global = require('global');
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -49,28 +47,12 @@ var Code = exports.Code = function (_React$Component) {
   }
 
   (0, _createClass3.default)(Code, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      this.highlight();
-    }
-  }, {
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate() {
-      this.highlight();
-    }
-  }, {
-    key: 'highlight',
-    value: function highlight() {
-      if (typeof _global.Prism !== 'undefined') {
-        _global.Prism.highlightAll();
-      }
-    }
-  }, {
     key: 'render',
     value: function render() {
       var codeStyle = {
         fontFamily: 'Menlo, Monaco, "Courier New", monospace',
-        backgroundColor: '#fafafa'
+        backgroundColor: '#fafafa',
+        marginBottom: 15
       };
 
       var preStyle = {
@@ -78,7 +60,8 @@ var Code = exports.Code = function (_React$Component) {
         backgroundColor: '#fafafa',
         padding: '.5rem',
         lineHeight: 1.5,
-        overflowX: 'scroll'
+        overflowX: 'scroll',
+        display: 'inline'
       };
 
       var className = this.props.language ? 'language-' + this.props.language : '';
@@ -89,7 +72,7 @@ var Code = exports.Code = function (_React$Component) {
         _react2.default.createElement(
           'code',
           { style: codeStyle, className: className },
-          this.props.code
+          this.props.children
         )
       );
     }
@@ -115,9 +98,10 @@ function Pre(props) {
     lineHeight: 1.5,
     overflowX: 'scroll'
   };
+
   return _react2.default.createElement(
     'pre',
-    { style: style },
+    { style: style, className: 'test' },
     props.children
   );
 }
