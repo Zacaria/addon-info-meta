@@ -101,7 +101,7 @@ function Pre(props) {
 
   return _react2.default.createElement(
     'pre',
-    { style: style, className: 'test' },
+    { style: style },
     props.children
   );
 }

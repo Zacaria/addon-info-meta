@@ -9,7 +9,7 @@
     "url": "https://github.com/mbeaudru-mrkl/addon-info-meta.git"
   },
   "scripts": {
-    "prepare": "node ./prepare.js",
+    "watch": "gulp",
     "publish-storybook": "bash .scripts/publish_storybook.sh",
     "storybook": "start-storybook -p 9010"
   },
@@ -22,6 +22,8 @@
     "marksy": "^5.0.0",
     "prop-types": "^15.6.0",
     "react-addons-create-fragment": "^15.5.3",
+    "react-fontawesome": "^1.6.1",
+    "react-json-tree": "^0.10.9",
     "util-deprecate": "^1.0.2"
   },
   "devDependencies": {
@@ -34,6 +36,8 @@
     "babel-preset-stage-0": "^6.24.1",
     "chalk": "^2.2.0",
     "git-url-parse": "^6.2.2",
+    "gulp": "^3.9.1",
+    "gulp-watch": "^4.3.11",
     "npmlog": "^4.1.2",
     "path": "^0.12.7",
     "prismjs": "^1.8.1",

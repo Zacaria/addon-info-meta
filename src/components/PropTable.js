@@ -1,16 +1,18 @@
-/* eslint-disable no-underscore-dangle */
-
 import PropTypes from 'prop-types';
 import React from 'react';
 import PropVal from './PropVal';
+import _ from 'lodash';
+import FontAwesome from 'react-fontawesome';
+import JSONTree from 'react-json-tree';
+import solarized from "./markdown/solarized";
 
 const PropTypesMap = new Map();
 
 Object.keys(PropTypes).forEach(typeName => {
-  const type = PropTypes[typeName];
+    const type = PropTypes[typeName];
 
-  PropTypesMap.set(type, typeName);
-  PropTypesMap.set(type.isRequired, typeName);
+    PropTypesMap.set(type, typeName);
+    PropTypesMap.set(type.isRequired, typeName);
 });
 
 const stylesheet = {
@@ -21,99 +23,128 @@ const stylesheet = {
   },
 };
 
-const isNotEmpty = obj => obj && obj.props && Object.keys(obj.props).length > 0;
+const propsFromPropTypes = component => {
+  const props = [];
 
-const renderDocgenPropType = propType => {
-  if (!propType) {
-    return 'unknown';
-  }
+  const propTypes = component.propTypes || {};
+  const defaultProps = component.defaultProps || {};
+  const metaProps = component.metaProps || {};
+  const propNames = Object.keys(propTypes)
+    .filter(name => name !== 'componentClass');
 
-  const name = propType.name;
-
-  switch (name) {
-    case 'arrayOf':
-      return `${propType.value.name}[]`;
-    case 'instanceOf':
-      return propType.value;
-    case 'union':
-      return propType.raw;
-    case 'signature':
-      return propType.raw;
-    default:
-      return name;
-  }
-};
-
-const hasDocgen = type => isNotEmpty(type.__docgenInfo);
-
-const boolToString = value => (value ? 'yes' : 'no');
-
-const propsFromDocgen = type => {
-  const props = {};
-  const docgenInfoProps = type.__docgenInfo.props;
-
-  Object.keys(docgenInfoProps).forEach(property => {
-    const docgenInfoProp = docgenInfoProps[property];
-    const defaultValueDesc = docgenInfoProp.defaultValue || {};
-    const propType = docgenInfoProp.flowType || docgenInfoProp.type || 'other';
-
-    props[property] = {
-      property,
-      propType: renderDocgenPropType(propType),
-      required: boolToString(docgenInfoProp.required),
-      description: docgenInfoProp.description,
-      defaultValue: defaultValueDesc.value,
+  propNames.forEach(propName => {
+    const typeName = propTypes[propName].__type;
+    const required = propTypes[propName].__required ? 'yes' : null;
+    const propInfo = {
+        name: propName,
+        type: typeName || 'other',
+        required,
+        defaultValue: defaultProps[propName],
+        description: _.get(metaProps, [propName, 'description'], undefined)
     };
+
+    switch (typeName) {
+        case 'oneOf': propInfo.values = propTypes[propName].__values;
+        break;
+        case 'shape': propInfo.shape = propTypes[propName].__shape;
+        break;
+    }
+
+    props.push(propInfo);
   });
 
   return props;
 };
 
-const propsFromPropTypes = type => {
-  const props = {};
+class ShowMore extends React.Component {
+    constructor(props) {
+        super(props);
 
-  if (type.propTypes) {
-    Object.keys(type.propTypes).forEach(property => {
-      const typeInfo = type.propTypes[property];
-      const required = boolToString(typeInfo.isRequired === undefined);
-      const description =
-        type.__docgenInfo && type.__docgenInfo.props && type.__docgenInfo.props[property]
-          ? type.__docgenInfo.props[property].description
-          : null;
-      let propType = PropTypesMap.get(typeInfo) || 'other';
+        this.handleClick = this.handleClick.bind(this);
+    }
 
-      if (propType === 'other') {
-        if (
-          type.__docgenInfo &&
-          type.__docgenInfo.props &&
-          type.__docgenInfo.props[property] &&
-          type.__docgenInfo.props[property].type
-        ) {
-          propType = type.__docgenInfo.props[property].type.name;
-        }
+    state = {
+        showMore: false
+    };
+
+    handleClick() {
+        this.setState({ showMore: !this.state.showMore });
+    }
+
+    render() {
+        const { label, children } = this.props;
+        return (
+            <div>
+                <div
+                    onClick={this.handleClick}
+                    style={{
+                        cursor: 'pointer',
+                        color: '#5b8ed3',
+                        fontWeight: 500
+                    }}
+                >
+                    {this.state.showMore ?
+                        <div
+                            style={{
+                                fontSize: '0.75em',
+                                marginRight: 4,
+                                transform: 'rotateZ(90deg)',
+                                transformOrigin: '45% 50% 0px',
+                                display: 'inline-block'
+                            }}
+                        >
+                            ▶
+                        </div>
+                        :
+                        <div
+                            style={{
+                                fontSize: '0.75em',
+                                marginRight: 4,
+                                display: 'inline-block'
+                            }}
+                        >
+                            ▶
+                        </div>
+                    }
+                    {label}
+                </div>
+                {this.state.showMore &&
+                <div className="json-tree-container">
+                    <style>{`.json-tree-container > ul { margin: 0 !important; }`}</style>
+                    {children}
+                </div>
+                }
+            </div>
+        )
+    }
+}
+
+const getTypeNode = ({ type, ...propInfo }) => {
+  switch (type) {
+      case 'oneOf': {
+        return (
+            <ShowMore label={type}>
+                <ul>
+                    {propInfo.values.map(value => <li>{value}</li>)}
+                </ul>
+            </ShowMore>
+        )
       }
-
-      props[property] = { property, propType, required, description };
-    });
+      case 'shape': {
+          // console.log(propInfo);
+          return (
+              <ShowMore label={type}>
+                  <JSONTree
+                      hideRoot
+                      data={propInfo.shape}
+                      theme={solarized}
+                      shouldExpandNode={() => true}
+                  />
+              </ShowMore>
+          )
+      }
+      default: return type;
   }
-
-  if (type.defaultProps) {
-    Object.keys(type.defaultProps).forEach(property => {
-      const value = type.defaultProps[property];
-
-      if (value === undefined) {
-        return;
-      }
-
-      if (!props[property]) {
-        props[property] = { property };
-      }
-
-      props[property].defaultValue = value;
-    });
-  }
-
-  return props;
 };
 
 export default function PropTable(props) {
@@ -123,10 +154,9 @@ export default function PropTable(props) {
     return null;
   }
 
-  const accumProps = hasDocgen(type) ? propsFromDocgen(type) : propsFromPropTypes(type);
-  const array = Object.values(accumProps);
+  const propsList = propsFromPropTypes(type);
 
-  if (!array.length) {
+  if (!propsList.length) {
     return <small>No propTypes defined!</small>;
   }
 
@@ -140,27 +170,27 @@ export default function PropTable(props) {
     <table style={stylesheet.propTable}>
       <thead>
         <tr>
-          <th>property</th>
-          <th>propType</th>
+          <th>name</th>
+          <th>type</th>
           <th>required</th>
           <th>default</th>
           <th>description</th>
         </tr>
       </thead>
       <tbody>
-        {array.map(row => (
-          <tr key={row.property}>
-            <td>{row.property}</td>
-            <td>{row.propType}</td>
-            <td>{row.required}</td>
+        {propsList.map(prop => (
+          <tr key={prop.name}>
+            <td>{prop.name}</td>
+            <td>{getTypeNode(prop)}</td>
+            <td>{prop.required}</td>
             <td>
-              {row.defaultValue === undefined ? (
+              {prop.defaultValue === undefined ? (
                 '-'
               ) : (
-                <PropVal val={row.defaultValue} {...propValProps} />
+                <PropVal val={prop.defaultValue} {...propValProps} />
               )}
             </td>
-            <td>{row.description}</td>
+            <td>{prop.description}</td>
           </tr>
         ))}
       </tbody>

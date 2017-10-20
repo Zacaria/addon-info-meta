@@ -153,9 +153,9 @@ export default class Story extends React.Component {
     };
 
     const infoStyle = Object.assign({}, stylesheet.info);
-    if (!this.state.open) {
-      infoStyle.display = 'none';
-    }
+    // if (!this.state.open) {
+    //   infoStyle.display = 'none';
+    // }
 
     const openOverlay = () => {
       this.setState({ open: true });
@@ -251,7 +251,7 @@ export default class Story extends React.Component {
 
     const stringifiedJSX = reactElementToJSXString(this.props.children, {
         showDefaultProps: false,
-        showFunctions: true,
+        showFunctions: false,
         tabStop: 4,
         maxInlineAttributesLineLength: 120
     });
