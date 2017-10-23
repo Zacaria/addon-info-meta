@@ -66,10 +66,6 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _reactFontawesome = require('react-fontawesome');
-
-var _reactFontawesome2 = _interopRequireDefault(_reactFontawesome);
-
 var _reactJsonTree = require('react-json-tree');
 
 var _reactJsonTree2 = _interopRequireDefault(_reactJsonTree);
@@ -78,7 +74,41 @@ var _solarized = require('./markdown/solarized');
 
 var _solarized2 = _interopRequireDefault(_solarized);
 
+var _markdown = require('../components/markdown');
+
+var _prismjs = require('prismjs');
+
+var _prismjs2 = _interopRequireDefault(_prismjs);
+
+require('prismjs/components/prism-jsx.min');
+
+var _marksy = require('marksy');
+
+var _marksy2 = _interopRequireDefault(_marksy);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var defaultMarksyConf = {
+    createElement: _react2.default.createElement,
+    highlight: function highlight(lang, code) {
+        return _prismjs2.default.highlight(code, _prismjs2.default.languages[lang]);
+    },
+
+    elements: {
+        h1: _markdown.H1,
+        h2: _markdown.H2,
+        h3: _markdown.H3,
+        h4: _markdown.H4,
+        h5: _markdown.H5,
+        h6: _markdown.H6,
+        p: _markdown.P,
+        a: _markdown.A,
+        li: _markdown.LI,
+        ul: _markdown.UL
+    }
+};
+
+var marksy = (0, _marksy2.default)(defaultMarksyConf);
 
 var PropTypesMap = new _map2.default();
 
@@ -93,7 +123,7 @@ var stylesheet = {
     propTable: {
         marginLeft: -10,
         borderSpacing: '10px 5px',
-        borderCollapse: 'separate'
+        borderCollapse: 'collapse'
     }
 };
 
@@ -103,6 +133,7 @@ var propsFromPropTypes = function propsFromPropTypes(component) {
     var propTypes = component.propTypes || {};
     var defaultProps = component.defaultProps || {};
     var metaProps = component.metaProps || {};
+    console.log(component);
     var propNames = (0, _keys2.default)(propTypes).filter(function (name) {
         return name !== 'componentClass';
     });
@@ -110,13 +141,13 @@ var propsFromPropTypes = function propsFromPropTypes(component) {
     propNames.forEach(function (propName) {
         var typeName = propTypes[propName].__type;
         var required = propTypes[propName].__required ? 'yes' : null;
-
+        if (propName === 'label') console.log(metaProps);
         var propInfo = {
             name: propName,
             type: typeName || 'other',
             required: required,
             defaultValue: defaultProps[propName],
-            description: _lodash2.default.get(metaProps, [propName, 'description'], undefined),
+            description: _lodash2.default.get(metaProps, [propName, 'description'], ''),
             jsonDoc: propTypes[propName].__jsonDoc
         };
 
@@ -381,6 +412,25 @@ var getTypeNode = function getTypeNode(_ref) {
     }
 };
 
+var Td = function Td(_ref2) {
+    var children = _ref2.children,
+        style = _ref2.style,
+        props = (0, _objectWithoutProperties3.default)(_ref2, ['children', 'style']);
+
+    var mergeStyle = (0, _extends3.default)({
+        verticalAlign: 'baseline',
+        paddingTop: 5,
+        paddingRight: 10
+    }, style);
+    return _react2.default.createElement(
+        'td',
+        (0, _extends3.default)({
+            style: mergeStyle
+        }, props),
+        children
+    );
+};
+
 function PropTable(props) {
     var type = props.type,
         maxPropObjectKeys = props.maxPropObjectKeys,
@@ -419,22 +469,22 @@ function PropTable(props) {
                 null,
                 _react2.default.createElement(
                     'th',
-                    null,
+                    { style: { paddingRight: 10 } },
                     'name'
                 ),
                 _react2.default.createElement(
                     'th',
-                    null,
+                    { style: { paddingRight: 10 } },
                     'type'
                 ),
                 _react2.default.createElement(
                     'th',
-                    null,
+                    { style: { paddingRight: 10 } },
                     'required'
                 ),
                 _react2.default.createElement(
                     'th',
-                    null,
+                    { style: { paddingRight: 10 } },
                     'default'
                 ),
                 _react2.default.createElement(
@@ -450,31 +500,31 @@ function PropTable(props) {
             propsList.map(function (prop) {
                 return _react2.default.createElement(
                     'tr',
-                    { key: prop.name },
+                    { key: prop.name, style: { borderBottom: '1px solid #eee' } },
                     _react2.default.createElement(
-                        'td',
-                        { style: { verticalAlign: 'baseline' } },
+                        Td,
+                        null,
                         prop.name
                     ),
                     _react2.default.createElement(
-                        'td',
-                        null,
+                        Td,
+                        { style: { whiteSpace: 'nowrap' } },
                         getTypeNode(prop)
                     ),
                     _react2.default.createElement(
-                        'td',
+                        Td,
                         null,
                         prop.required
                     ),
                     _react2.default.createElement(
-                        'td',
+                        Td,
                         null,
                         prop.defaultValue === undefined ? '-' : _react2.default.createElement(_PropVal2.default, (0, _extends3.default)({ val: prop.defaultValue }, propValProps))
                     ),
                     _react2.default.createElement(
-                        'td',
-                        null,
-                        prop.description
+                        Td,
+                        { style: { paddingRight: 0 } },
+                        marksy(prop.description).tree
                     )
                 );
             })

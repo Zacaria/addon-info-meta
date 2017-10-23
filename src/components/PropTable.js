@@ -2,9 +2,33 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import PropVal from './PropVal';
 import _ from 'lodash';
-import FontAwesome from 'react-fontawesome';
 import JSONTree from 'react-json-tree';
 import solarized from "./markdown/solarized";
+import { H1, H2, H3, H4, H5, H6, Code, P, UL, A, LI, Pre } from '../components/markdown';
+import Prism from 'prismjs';
+import 'prismjs/components/prism-jsx.min';
+import marksyConstructor from 'marksy';
+
+const defaultMarksyConf = {
+    createElement: React.createElement,
+    highlight(lang, code) {
+        return Prism.highlight(code, Prism.languages[lang]);
+    },
+    elements: {
+        h1: H1,
+        h2: H2,
+        h3: H3,
+        h4: H4,
+        h5: H5,
+        h6: H6,
+        p: P,
+        a: A,
+        li: LI,
+        ul: UL,
+    }
+};
+
+const marksy = marksyConstructor(defaultMarksyConf);
 
 const PropTypesMap = new Map();
 
@@ -19,7 +43,7 @@ const stylesheet = {
   propTable: {
     marginLeft: -10,
     borderSpacing: '10px 5px',
-    borderCollapse: 'separate',
+    borderCollapse: 'collapse',
   },
 };
 
@@ -29,19 +53,20 @@ const propsFromPropTypes = component => {
   const propTypes = component.propTypes || {};
   const defaultProps = component.defaultProps || {};
   const metaProps = component.metaProps || {};
+  console.log(component);
   const propNames = Object.keys(propTypes)
     .filter(name => name !== 'componentClass');
 
   propNames.forEach(propName => {
     const typeName = propTypes[propName].__type;
     const required = propTypes[propName].__required ? 'yes' : null;
-
+    if (propName === 'label') console.log(metaProps);
     const propInfo = {
         name: propName,
         type: typeName || 'other',
         required,
         defaultValue: defaultProps[propName],
-        description: _.get(metaProps, [propName, 'description'], undefined),
+        description: _.get(metaProps, [propName, 'description'], ''),
         jsonDoc: propTypes[propName].__jsonDoc
     };
 
@@ -229,6 +254,22 @@ const getTypeNode = ({ type, ...propInfo }) => {
   }
 };
 
+const Td = ({ children, style, ...props }) => {
+    const mergeStyle = { ...{
+        verticalAlign: 'baseline',
+        paddingTop: 5,
+        paddingRight: 10
+    }, ...style, };
+    return (
+        <td
+            style={mergeStyle}
+            {...props}
+        >
+            {children}
+            </td>
+    );
+};
+
 export default function PropTable(props) {
   const { type, maxPropObjectKeys, maxPropArrayLength, maxPropStringLength } = props;
 
@@ -252,27 +293,27 @@ export default function PropTable(props) {
     <table style={stylesheet.propTable}>
       <thead>
         <tr>
-          <th>name</th>
-          <th>type</th>
-          <th>required</th>
-          <th>default</th>
+          <th style={{ paddingRight: 10 }}>name</th>
+          <th style={{ paddingRight: 10 }}>type</th>
+          <th style={{ paddingRight: 10 }}>required</th>
+          <th style={{ paddingRight: 10 }}>default</th>
           <th>description</th>
         </tr>
       </thead>
       <tbody>
         {propsList.map(prop => (
-          <tr key={prop.name}>
-            <td style={{ verticalAlign: 'baseline' }}>{prop.name}</td>
-            <td>{getTypeNode(prop)}</td>
-            <td>{prop.required}</td>
-            <td>
+          <tr key={prop.name} style={{ borderBottom: '1px solid #eee' }}>
+            <Td>{prop.name}</Td>
+            <Td style={{ whiteSpace: 'nowrap'}}>{getTypeNode(prop)}</Td>
+            <Td>{prop.required}</Td>
+            <Td>
               {prop.defaultValue === undefined ? (
                 '-'
               ) : (
                 <PropVal val={prop.defaultValue} {...propValProps} />
               )}
-            </td>
-            <td>{prop.description}</td>
+            </Td>
+            <Td style={{ paddingRight: 0 }}>{marksy(prop.description).tree}</Td>
           </tr>
         ))}
       </tbody>

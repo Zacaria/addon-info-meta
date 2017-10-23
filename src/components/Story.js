@@ -153,9 +153,9 @@ export default class Story extends React.Component {
     };
 
     const infoStyle = Object.assign({}, stylesheet.info);
-    // if (!this.state.open) {
-    //   infoStyle.display = 'none';
-    // }
+    if (!this.state.open) {
+      infoStyle.display = 'none';
+    }
 
     const openOverlay = () => {
       this.setState({ open: true });

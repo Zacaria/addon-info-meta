@@ -250,9 +250,9 @@ var Story = function (_React$Component) {
       var linkStyle = (0, _extends3.default)({}, stylesheet.link.base, stylesheet.link.topRight);
 
       var infoStyle = (0, _assign2.default)({}, stylesheet.info);
-      // if (!this.state.open) {
-      //   infoStyle.display = 'none';
-      // }
+      if (!this.state.open) {
+        infoStyle.display = 'none';
+      }
 
       var openOverlay = function openOverlay() {
         _this2.setState({ open: true });
