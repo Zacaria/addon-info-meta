@@ -8,6 +8,14 @@ var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
 
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _slicedToArray2 = require('babel-runtime/helpers/slicedToArray');
+
+var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
+
 var _objectWithoutProperties2 = require('babel-runtime/helpers/objectWithoutProperties');
 
 var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
@@ -102,22 +110,15 @@ var propsFromPropTypes = function propsFromPropTypes(component) {
     propNames.forEach(function (propName) {
         var typeName = propTypes[propName].__type;
         var required = propTypes[propName].__required ? 'yes' : null;
+
         var propInfo = {
             name: propName,
             type: typeName || 'other',
             required: required,
             defaultValue: defaultProps[propName],
-            description: _lodash2.default.get(metaProps, [propName, 'description'], undefined)
+            description: _lodash2.default.get(metaProps, [propName, 'description'], undefined),
+            jsonDoc: propTypes[propName].__jsonDoc
         };
-
-        switch (typeName) {
-            case 'oneOf':
-                propInfo.values = propTypes[propName].__values;
-                break;
-            case 'shape':
-                propInfo.shape = propTypes[propName].__shape;
-                break;
-        }
 
         props.push(propInfo);
     });
@@ -134,9 +135,8 @@ var ShowMore = function (_React$Component) {
         var _this = (0, _possibleConstructorReturn3.default)(this, (ShowMore.__proto__ || (0, _getPrototypeOf2.default)(ShowMore)).call(this, props));
 
         _this.state = {
-            showMore: false
+            showMore: _this.props.showByDefault
         };
-
 
         _this.handleClick = _this.handleClick.bind(_this);
         return _this;
@@ -156,7 +156,7 @@ var ShowMore = function (_React$Component) {
 
             return _react2.default.createElement(
                 'div',
-                null,
+                { key: this.props.id },
                 _react2.default.createElement(
                     'div',
                     {
@@ -212,6 +212,21 @@ var getTypeNode = function getTypeNode(_ref) {
     var type = _ref.type,
         propInfo = (0, _objectWithoutProperties3.default)(_ref, ['type']);
 
+    if (type.match(/^arrayOf/)) {
+        return _react2.default.createElement(
+            ShowMore,
+            { label: type },
+            _react2.default.createElement(_reactJsonTree2.default, {
+                hideRoot: true,
+                data: propInfo.jsonDoc,
+                theme: _solarized2.default,
+                shouldExpandNode: function shouldExpandNode() {
+                    return true;
+                }
+            })
+        );
+    }
+
     switch (type) {
         case 'oneOf':
             {
@@ -221,10 +236,10 @@ var getTypeNode = function getTypeNode(_ref) {
                     _react2.default.createElement(
                         'ul',
                         null,
-                        propInfo.values.map(function (value) {
+                        propInfo.jsonDoc.map(function (value, key) {
                             return _react2.default.createElement(
                                 'li',
-                                null,
+                                { key: key },
                                 value
                             );
                         })
@@ -233,18 +248,132 @@ var getTypeNode = function getTypeNode(_ref) {
             }
         case 'shape':
             {
-                // console.log(propInfo);
                 return _react2.default.createElement(
                     ShowMore,
                     { label: type },
                     _react2.default.createElement(_reactJsonTree2.default, {
                         hideRoot: true,
-                        data: propInfo.shape,
+                        data: propInfo.jsonDoc,
                         theme: _solarized2.default,
                         shouldExpandNode: function shouldExpandNode() {
                             return true;
                         }
                     })
+                );
+            }
+        case 'instanceOf':
+            {
+                return _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                        'span',
+                        {
+                            style: {
+                                fontWeight: 500,
+                                color: 'rgb(91, 142, 211)'
+                            }
+                        },
+                        type
+                    ),
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        '(',
+                        propInfo.jsonDoc,
+                        ')'
+                    )
+                );
+            }
+        case 'objectOf':
+            {
+                var _propInfo$jsonDoc$mat = propInfo.jsonDoc.match(/^objectOf\((\w+)/),
+                    _propInfo$jsonDoc$mat2 = (0, _slicedToArray3.default)(_propInfo$jsonDoc$mat, 2),
+                    uselessVar = _propInfo$jsonDoc$mat2[0],
+                    propertiesType = _propInfo$jsonDoc$mat2[1];
+
+                return _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                        'span',
+                        {
+                            style: {
+                                fontWeight: 500,
+                                color: 'rgb(91, 142, 211)'
+                            }
+                        },
+                        type
+                    ),
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        '(',
+                        propertiesType,
+                        ')'
+                    )
+                );
+            }
+        case 'oneOfType':
+            {
+                var types = propInfo.jsonDoc;
+                return _react2.default.createElement(
+                    ShowMore,
+                    { label: type },
+                    _react2.default.createElement(
+                        'ul',
+                        null,
+                        types.map(function (t, key) {
+                            if (typeof t === 'string') {
+                                return _react2.default.createElement(
+                                    'div',
+                                    { key: key },
+                                    t
+                                );
+                            } else {
+                                if ((0, _typeof3.default)(t.__jsonDoc) !== 'object') {
+                                    return _react2.default.createElement(
+                                        'div',
+                                        { key: key },
+                                        _react2.default.createElement(
+                                            'span',
+                                            {
+                                                style: {
+                                                    fontWeight: 500,
+                                                    color: 'rgb(91, 142, 211)'
+                                                }
+                                            },
+                                            t.__type
+                                        ),
+                                        _react2.default.createElement(
+                                            'span',
+                                            null,
+                                            '(',
+                                            t.__jsonDoc,
+                                            ')'
+                                        )
+                                    );
+                                }
+                                return _react2.default.createElement(
+                                    ShowMore,
+                                    {
+                                        key: key,
+                                        id: key,
+                                        label: t.__type,
+                                        showByDefault: true
+                                    },
+                                    _react2.default.createElement(_reactJsonTree2.default, {
+                                        hideRoot: true,
+                                        data: t.__jsonDoc,
+                                        theme: _solarized2.default,
+                                        shouldExpandNode: function shouldExpandNode() {
+                                            return true;
+                                        }
+                                    })
+                                );
+                            }
+                        })
+                    )
                 );
             }
         default:
@@ -324,7 +453,7 @@ function PropTable(props) {
                     { key: prop.name },
                     _react2.default.createElement(
                         'td',
-                        null,
+                        { style: { verticalAlign: 'baseline' } },
                         prop.name
                     ),
                     _react2.default.createElement(

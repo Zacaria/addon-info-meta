@@ -35,20 +35,15 @@ const propsFromPropTypes = component => {
   propNames.forEach(propName => {
     const typeName = propTypes[propName].__type;
     const required = propTypes[propName].__required ? 'yes' : null;
+
     const propInfo = {
         name: propName,
         type: typeName || 'other',
         required,
         defaultValue: defaultProps[propName],
-        description: _.get(metaProps, [propName, 'description'], undefined)
+        description: _.get(metaProps, [propName, 'description'], undefined),
+        jsonDoc: propTypes[propName].__jsonDoc
     };
-
-    switch (typeName) {
-        case 'oneOf': propInfo.values = propTypes[propName].__values;
-        break;
-        case 'shape': propInfo.shape = propTypes[propName].__shape;
-        break;
-    }
 
     props.push(propInfo);
   });
@@ -59,12 +54,11 @@ const propsFromPropTypes = component => {
 class ShowMore extends React.Component {
     constructor(props) {
         super(props);
-
         this.handleClick = this.handleClick.bind(this);
     }
 
     state = {
-        showMore: false
+        showMore: this.props.showByDefault
     };
 
     handleClick() {
@@ -74,7 +68,7 @@ class ShowMore extends React.Component {
     render() {
         const { label, children } = this.props;
         return (
-            <div>
+            <div key={this.props.id}>
                 <div
                     onClick={this.handleClick}
                     style={{
@@ -120,26 +114,114 @@ class ShowMore extends React.Component {
 }
 
 const getTypeNode = ({ type, ...propInfo }) => {
+  if (type.match(/^arrayOf/)) {
+      return (
+          <ShowMore label={type}>
+              <JSONTree
+                  hideRoot
+                  data={propInfo.jsonDoc}
+                  theme={solarized}
+                  shouldExpandNode={() => true}
+              />
+          </ShowMore>
+      )
+  }
+
   switch (type) {
       case 'oneOf': {
         return (
             <ShowMore label={type}>
                 <ul>
-                    {propInfo.values.map(value => <li>{value}</li>)}
+                    {propInfo.jsonDoc.map((value, key) => <li key={key}>{value}</li>)}
                 </ul>
             </ShowMore>
         )
       }
       case 'shape': {
-          // console.log(propInfo);
           return (
               <ShowMore label={type}>
                   <JSONTree
                       hideRoot
-                      data={propInfo.shape}
+                      data={propInfo.jsonDoc}
                       theme={solarized}
                       shouldExpandNode={() => true}
                   />
+              </ShowMore>
+          )
+      }
+      case 'instanceOf': {
+          return (
+              <div>
+                  <span
+                    style={{
+                        fontWeight: 500,
+                        color: 'rgb(91, 142, 211)'
+                    }}
+                  >
+                      {type}
+                  </span>
+                  <span>({propInfo.jsonDoc})</span>
+              </div>
+          )
+      }
+      case 'objectOf': {
+          const [uselessVar, propertiesType] = propInfo.jsonDoc.match(/^objectOf\((\w+)/);
+          return (
+              <div>
+                  <span
+                    style={{
+                        fontWeight: 500,
+                        color: 'rgb(91, 142, 211)'
+                    }}
+                  >
+                      {type}
+                  </span>
+                  <span>({propertiesType})</span>
+              </div>
+          )
+      }
+      case 'oneOfType': {
+          const types = propInfo.jsonDoc;
+          return (
+              <ShowMore label={type}>
+                  <ul>
+                      {types.map((t, key) => {
+                          if (typeof t === 'string') {
+                              return <div key={key}>{t}</div>
+                          } else {
+                              if (typeof t.__jsonDoc !== 'object') {
+                                  return (
+                                      <div key={key}>
+                                          <span
+                                              style={{
+                                                  fontWeight: 500,
+                                                  color: 'rgb(91, 142, 211)'
+                                              }}
+                                          >
+                                              {t.__type}
+                                          </span>
+                                          <span>({t.__jsonDoc})</span>
+                                      </div>
+                                  )
+                              }
+                              return (
+                                  <ShowMore
+                                      key={key}
+                                      id={key}
+                                      label={t.__type}
+                                      showByDefault
+                                  >
+                                      <JSONTree
+                                          hideRoot
+                                          data={t.__jsonDoc}
+                                          theme={solarized}
+                                          shouldExpandNode={() => true}
+                                      />
+                                  </ShowMore>
+                              )
+                          }
+                      })}
+                  </ul>
               </ShowMore>
           )
       }
@@ -180,7 +262,7 @@ export default function PropTable(props) {
       <tbody>
         {propsList.map(prop => (
           <tr key={prop.name}>
-            <td>{prop.name}</td>
+            <td style={{ verticalAlign: 'baseline' }}>{prop.name}</td>
             <td>{getTypeNode(prop)}</td>
             <td>{prop.required}</td>
             <td>
