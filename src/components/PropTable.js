@@ -53,14 +53,12 @@ const propsFromPropTypes = component => {
   const propTypes = component.propTypes || {};
   const defaultProps = component.defaultProps || {};
   const metaProps = component.metaProps || {};
-  console.log(component);
   const propNames = Object.keys(propTypes)
     .filter(name => name !== 'componentClass');
 
   propNames.forEach(propName => {
     const typeName = propTypes[propName].__type;
     const required = propTypes[propName].__required ? 'yes' : null;
-    if (propName === 'label') console.log(metaProps);
     const propInfo = {
         name: propName,
         type: typeName || 'other',
