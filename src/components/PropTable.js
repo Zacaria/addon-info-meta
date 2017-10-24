@@ -27,7 +27,6 @@ const defaultMarksyConf = {
         ul: UL,
     }
 };
-
 const marksy = marksyConstructor(defaultMarksyConf);
 
 const PropTypesMap = new Map();

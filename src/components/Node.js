@@ -51,7 +51,6 @@ export default function Node(props) {
     maxPropArrayLength,
     maxPropStringLength,
   } = props;
-  console.log(node);
   const { tagStyle, containerStyle } = stylesheet;
 
   const leftPad = {

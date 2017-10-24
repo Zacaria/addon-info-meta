@@ -107,7 +107,6 @@ var defaultMarksyConf = {
         ul: _markdown.UL
     }
 };
-
 var marksy = (0, _marksy2.default)(defaultMarksyConf);
 
 var PropTypesMap = new _map2.default();
@@ -133,7 +132,6 @@ var propsFromPropTypes = function propsFromPropTypes(component) {
     var propTypes = component.propTypes || {};
     var defaultProps = component.defaultProps || {};
     var metaProps = component.metaProps || {};
-    console.log(component);
     var propNames = (0, _keys2.default)(propTypes).filter(function (name) {
         return name !== 'componentClass';
     });
@@ -141,7 +139,6 @@ var propsFromPropTypes = function propsFromPropTypes(component) {
     propNames.forEach(function (propName) {
         var typeName = propTypes[propName].__type;
         var required = propTypes[propName].__required ? 'yes' : null;
-        if (propName === 'label') console.log(metaProps);
         var propInfo = {
             name: propName,
             type: typeName || 'other',
