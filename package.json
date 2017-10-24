@@ -14,19 +14,20 @@
     "storybook": "start-storybook -p 9010"
   },
   "dependencies": {
+    "@kadira/storybook-addons": "^1.6.1",
     "@storybook/addons": "^3.2.12",
     "@storybook/components": "^3.2.12",
     "babel-runtime": "^6.26.0",
     "global": "^4.3.2",
     "lodash": "^4.17.4",
     "marksy": "^5.0.0",
+    "prismjs": "^1.8.1",
     "prop-types": "^15.6.0",
     "react-addons-create-fragment": "^15.5.3",
+    "react-element-to-jsx-string": "^13.0.0",
     "react-fontawesome": "^1.6.1",
     "react-json-tree": "^0.10.9",
-    "util-deprecate": "^1.0.2",
-    "react-element-to-jsx-string": "^13.0.0",
-    "prismjs": "^1.8.1"
+    "util-deprecate": "^1.0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
