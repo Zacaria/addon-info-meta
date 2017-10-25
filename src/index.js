@@ -24,19 +24,25 @@ function addInfo(storyFn, context, infoOptions) {
   };
 
   const channel = addons.getChannel();
-  const related = options.related || '';
-  const ux = options.ux || '';
+  const related = options.related;
+  const ux = options.ux;
+
+  const stringToHtml = (string) => {
+      if (!string) return null;
+      return ReactDOMServer.renderToString(marksy(related).tree);
+  };
+
   channel.emit(
       'storybooks/meta/related',
       {
-          htmlToDisplay: ReactDOMServer.renderToString(marksy(related).tree),
+          htmlToDisplay: stringToHtml(related),
           empty: !related
       }
   );
   channel.emit(
       'storybooks/meta/ux',
       {
-          htmlToDisplay: ReactDOMServer.renderToString(marksy(ux).tree),
+          htmlToDisplay: stringToHtml(ux),
           empty: !ux
       }
   );

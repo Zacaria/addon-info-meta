@@ -54,14 +54,20 @@ function addInfo(storyFn, context, infoOptions) {
   var options = (0, _extends3.default)({}, defaultOptions, infoOptions);
 
   var channel = _addons2.default.getChannel();
-  var related = options.related || '';
-  var ux = options.ux || '';
+  var related = options.related;
+  var ux = options.ux;
+
+  var stringToHtml = function stringToHtml(string) {
+    if (!string) return null;
+    return _server2.default.renderToString((0, _marksy2.default)(related).tree);
+  };
+
   channel.emit('storybooks/meta/related', {
-    htmlToDisplay: _server2.default.renderToString((0, _marksy2.default)(related).tree),
+    htmlToDisplay: stringToHtml(related),
     empty: !related
   });
   channel.emit('storybooks/meta/ux', {
-    htmlToDisplay: _server2.default.renderToString((0, _marksy2.default)(ux).tree),
+    htmlToDisplay: stringToHtml(ux),
     empty: !ux
   });
 
