@@ -3,12 +3,18 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 exports.H1 = H1;
 exports.H2 = H2;
 exports.H3 = H3;
 exports.H4 = H4;
 exports.H5 = H5;
 exports.H6 = H6;
+exports.HR = HR;
 
 var _react = require('react');
 
@@ -35,13 +41,15 @@ function H1(props) {
     var styles = {
         margin: "25px 0 0 0",
         padding: 0,
-        fontSize: '40px'
+        fontSize: '40px',
+        fontWeight: 500
     };
+
     return _react2.default.createElement(
         'h1',
         { id: props.id, style: styles },
         props.children,
-        _react2.default.createElement('hr', null)
+        _react2.default.createElement(HR, null)
     );
 }
 
@@ -49,16 +57,17 @@ H1.defaultProps = defaultProps;
 H1.propTypes = propTypes;
 
 function H2(props) {
-    var styles = {
+    var styles = (0, _extends3.default)({
         margin: "25px 0 0 0",
         padding: 0,
-        fontSize: '30px'
-    };
+        fontSize: '30px',
+        fontWeight: 500
+    }, props.style);
     return _react2.default.createElement(
         'h2',
         { id: props.id, style: styles },
         props.children,
-        _react2.default.createElement('hr', null)
+        _react2.default.createElement(HR, { style: props.hrStyle })
     );
 }
 
@@ -70,7 +79,7 @@ function H3(props) {
         margin: "15px 0 15px 0",
         padding: 0,
         fontSize: '22px',
-        textTransform: 'uppercase'
+        fontWeight: 500
     };
     return _react2.default.createElement(
         'h3',
@@ -86,7 +95,8 @@ function H4(props) {
     var styles = {
         margin: "15px 0 15px 0",
         padding: 0,
-        fontSize: '20px'
+        fontSize: '20px',
+        fontWeight: 500
     };
     return _react2.default.createElement(
         'h4',
@@ -119,7 +129,8 @@ function H6(props) {
     var styles = {
         margin: "15px 0 15px 0",
         padding: 0,
-        fontSize: '18px'
+        fontSize: '18px',
+        fontWeight: 500
     };
     return _react2.default.createElement(
         'h6',
@@ -130,3 +141,16 @@ function H6(props) {
 
 H6.defaultProps = defaultProps;
 H6.propTypes = propTypes;
+
+function HR(props) {
+    var styles = (0, _extends3.default)({
+        margin: '15px 0px',
+        padding: 0,
+        border: 0,
+        borderTop: '1px solid #f0f4f8'
+    }, props.style);
+    return _react2.default.createElement('hr', { style: styles });
+}
+
+HR.defaultProps = defaultProps;
+HR.propTypes = propTypes;

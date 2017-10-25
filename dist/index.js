@@ -25,11 +25,17 @@ var _Story2 = _interopRequireDefault(_Story);
 
 var _markdown = require('./components/markdown');
 
-var _prismjs = require('prismjs');
+var _marksy = require('./marksy');
 
-var _prismjs2 = _interopRequireDefault(_prismjs);
+var _marksy2 = _interopRequireDefault(_marksy);
 
-require('prismjs/components/prism-jsx.min');
+var _server = require('react-dom/server');
+
+var _server2 = _interopRequireDefault(_server);
+
+var _addons = require('@storybook/addons');
+
+var _addons2 = _interopRequireDefault(_addons);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44,39 +50,26 @@ var defaultOptions = {
   maxPropStringLength: 50
 };
 
-var defaultMarksyConf = {
-  createElement: _react2.default.createElement,
-  highlight: function highlight(lang, code) {
-    return _prismjs2.default.highlight(code, _prismjs2.default.languages[lang]);
-  },
-
-  elements: {
-    h1: _markdown.H1,
-    h2: _markdown.H2,
-    h3: _markdown.H3,
-    h4: _markdown.H4,
-    h5: _markdown.H5,
-    h6: _markdown.H6,
-    p: _markdown.P,
-    a: _markdown.A,
-    li: _markdown.LI,
-    ul: _markdown.UL
-  }
-};
-
 function addInfo(storyFn, context, infoOptions) {
   var options = (0, _extends3.default)({}, defaultOptions, infoOptions);
+
+  var channel = _addons2.default.getChannel();
+  var related = options.related || '';
+  var ux = options.ux || '';
+  channel.emit('storybooks/meta/related', {
+    htmlToDisplay: _server2.default.renderToString((0, _marksy2.default)(related).tree),
+    empty: !related
+  });
+  channel.emit('storybooks/meta/ux', {
+    htmlToDisplay: _server2.default.renderToString((0, _marksy2.default)(ux).tree),
+    empty: !ux
+  });
 
   // props.propTables can only be either an array of components or null
   // propTables option is allowed to be set to 'false' (a boolean)
   // if the option is false, replace it with null to avoid react warnings
   if (!options.propTables) {
     options.propTables = null;
-  }
-
-  var marksyConf = (0, _extends3.default)({}, defaultMarksyConf);
-  if (options && options.marksyConf) {
-    (0, _assign2.default)(marksyConf, options.marksyConf);
   }
   var props = {
     info: options.text,
@@ -89,7 +82,6 @@ function addInfo(storyFn, context, infoOptions) {
     styles: typeof options.styles === 'function' ? options.styles : function (s) {
       return s;
     },
-    marksyConf: marksyConf,
     maxPropObjectKeys: options.maxPropObjectKeys,
     maxPropArrayLength: options.maxPropArrayLength,
     maxPropsIntoLine: options.maxPropsIntoLine,

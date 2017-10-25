@@ -30,7 +30,7 @@ var propTypes = { children: _propTypes2.default.node };
 
 function P(props) {
   var style = {
-    marginBottom: 8,
+    margin: '0 0 8px',
     fontSize: '15px'
   };
   return _react2.default.createElement(

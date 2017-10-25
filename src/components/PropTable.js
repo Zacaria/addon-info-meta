@@ -4,30 +4,7 @@ import PropVal from './PropVal';
 import _ from 'lodash';
 import JSONTree from 'react-json-tree';
 import solarized from "./markdown/solarized";
-import { H1, H2, H3, H4, H5, H6, Code, P, UL, A, LI, Pre } from '../components/markdown';
-import Prism from 'prismjs';
-import 'prismjs/components/prism-jsx.min';
-import marksyConstructor from 'marksy';
-
-const defaultMarksyConf = {
-    createElement: React.createElement,
-    highlight(lang, code) {
-        return Prism.highlight(code, Prism.languages[lang]);
-    },
-    elements: {
-        h1: H1,
-        h2: H2,
-        h3: H3,
-        h4: H4,
-        h5: H5,
-        h6: H6,
-        p: P,
-        a: A,
-        li: LI,
-        ul: UL,
-    }
-};
-const marksy = marksyConstructor(defaultMarksyConf);
+import marksy from '../marksy';
 
 const PropTypesMap = new Map();
 
@@ -40,7 +17,6 @@ Object.keys(PropTypes).forEach(typeName => {
 
 const stylesheet = {
   propTable: {
-    marginLeft: -10,
     borderSpacing: '10px 5px',
     borderCollapse: 'collapse',
   },
@@ -80,7 +56,7 @@ class ShowMore extends React.Component {
     }
 
     state = {
-        showMore: this.props.showByDefault
+        showMore: true
     };
 
     handleClick() {
@@ -290,11 +266,11 @@ export default function PropTable(props) {
     <table style={stylesheet.propTable}>
       <thead>
         <tr>
-          <th style={{ paddingRight: 10 }}>name</th>
-          <th style={{ paddingRight: 10 }}>type</th>
-          <th style={{ paddingRight: 10 }}>required</th>
-          <th style={{ paddingRight: 10 }}>default</th>
-          <th>description</th>
+          <th style={{ paddingRight: 10, textAlign: 'left' }}>name</th>
+          <th style={{ paddingRight: 10, textAlign: 'left' }}>type</th>
+          <th style={{ paddingRight: 10, textAlign: 'left' }}>required</th>
+          <th style={{ paddingRight: 10, textAlign: 'left' }}>default</th>
+          <th style={{ textAlign: 'left' }}>description</th>
         </tr>
       </thead>
       <tbody>

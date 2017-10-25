@@ -66,7 +66,7 @@ var _prismjs = require('prismjs');
 
 var _prismjs2 = _interopRequireDefault(_prismjs);
 
-var _marksy = require('marksy');
+var _marksy = require('../marksy');
 
 var _marksy2 = _interopRequireDefault(_marksy);
 
@@ -78,10 +78,24 @@ var _reactElementToJsxString = require('react-element-to-jsx-string');
 
 var _reactElementToJsxString2 = _interopRequireDefault(_reactElementToJsxString);
 
+var _server = require('react-dom/server');
+
+var ReactDOMServer = _interopRequireWildcard(_server);
+
+var _markdown = require('./markdown');
+
+var _addons = require('@storybook/addons');
+
+var _addons2 = _interopRequireDefault(_addons);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _global2.default.STORYBOOK_REACT_CLASSES = _global2.default.STORYBOOK_REACT_CLASSES || [];
 var STORYBOOK_REACT_CLASSES = _global2.default.STORYBOOK_REACT_CLASSES;
+
+var overlay = false;
 
 var stylesheet = {
   link: {
@@ -185,7 +199,7 @@ var Story = function (_React$Component) {
       open: false,
       stylesheet: _this.props.styles(JSON.parse((0, _stringify2.default)(stylesheet)))
     };
-    _this.marksy = (0, _marksy2.default)(_this.props.marksyConf);
+    _this.marksy = _marksy2.default;
     return _this;
   }
 
@@ -272,7 +286,7 @@ var Story = function (_React$Component) {
           { style: this.state.stylesheet.children },
           this.props.children
         ),
-        _react2.default.createElement(
+        overlay && _react2.default.createElement(
           'a',
           { style: linkStyle, onClick: openOverlay, role: 'button', tabIndex: '0' },
           'Show Info'
@@ -307,6 +321,8 @@ var Story = function (_React$Component) {
       if (!this.props.context || !this.props.showHeader) {
         return null;
       }
+
+      if (!overlay) return null;
 
       return _react2.default.createElement(
         'div',
@@ -350,11 +366,19 @@ var Story = function (_React$Component) {
       var source = lines.map(function (s) {
         return s.slice(padding);
       }).join('\n');
-      return _react2.default.createElement(
+
+      var returnVal = _react2.default.createElement(
         'div',
         { style: this.state.stylesheet.infoContent },
         this.marksy(source).tree
       );
+
+      var channel = _addons2.default.getChannel();
+      channel.emit('storybooks/meta/description', { htmlToDisplay: ReactDOMServer.renderToString(returnVal) });
+
+      if (!overlay) return null;
+
+      return returnVal;
     }
   }, {
     key: '_getComponentDescription',
@@ -375,15 +399,13 @@ var Story = function (_React$Component) {
         });
       }
 
+      if (!overlay) return null;
+
       return retDiv;
     }
   }, {
     key: '_getSourceCode',
     value: function _getSourceCode() {
-      if (!this.props.showSource) {
-        return null;
-      }
-
       var stringifiedJSX = (0, _reactElementToJsxString2.default)(this.props.children, {
         showDefaultProps: false,
         showFunctions: false,
@@ -391,14 +413,9 @@ var Story = function (_React$Component) {
         maxInlineAttributesLineLength: 120
       });
 
-      return _react2.default.createElement(
+      var SourceCode = _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(
-          'h1',
-          { style: this.state.stylesheet.source.h1 },
-          'Story Source'
-        ),
         _react2.default.createElement(
           'pre',
           { className: 'language-jsx' },
@@ -409,6 +426,22 @@ var Story = function (_React$Component) {
             }
           })
         )
+      );
+
+      var channel = _addons2.default.getChannel();
+      channel.emit('storybooks/meta/sourceCode', { htmlToDisplay: ReactDOMServer.renderToString(SourceCode) });
+
+      if (!overlay) return null;
+
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          _markdown.H2,
+          null,
+          'Story Source'
+        ),
+        SourceCode
       );
     }
   }, {
@@ -472,11 +505,10 @@ var Story = function (_React$Component) {
           'div',
           { key: type.displayName || type.name },
           _react2.default.createElement(
-            'h2',
-            { style: _this4.state.stylesheet.propTableHead },
-            '"',
+            _markdown.H3,
+            null,
             type.displayName || type.name,
-            '" Component'
+            ' Component'
           ),
           _react2.default.createElement(_PropTable2.default, {
             type: type,
@@ -491,12 +523,17 @@ var Story = function (_React$Component) {
         return null;
       }
 
+      var channel = _addons2.default.getChannel();
+      channel.emit('storybooks/meta/propTypes', { htmlToDisplay: ReactDOMServer.renderToString(propTables) });
+
+      if (!overlay) return null;
+
       return _react2.default.createElement(
         'div',
         null,
         _react2.default.createElement(
-          'h1',
-          { style: this.state.stylesheet.source.h1 },
+          _markdown.H2,
+          null,
           'Prop Types'
         ),
         propTables

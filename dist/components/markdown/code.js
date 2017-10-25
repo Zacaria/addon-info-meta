@@ -52,16 +52,18 @@ var Code = exports.Code = function (_React$Component) {
       var codeStyle = {
         fontFamily: 'Menlo, Monaco, "Courier New", monospace',
         backgroundColor: '#fafafa',
-        marginBottom: 15
+        marginBottom: 15,
+        fontSize: 14
       };
 
       var preStyle = {
         fontFamily: 'Menlo, Monaco, "Courier New", monospace',
-        backgroundColor: '#fafafa',
         padding: '.5rem',
         lineHeight: 1.5,
         overflowX: 'scroll',
-        display: 'inline'
+        display: 'inline',
+        backgroundColor: '#fdf6e3',
+        margin: '20px 0'
       };
 
       var className = this.props.language ? 'language-' + this.props.language : '';
@@ -93,10 +95,11 @@ function Pre(props) {
   var style = {
     fontSize: '.88em',
     fontFamily: 'Menlo, Monaco, "Courier New", monospace',
-    backgroundColor: '#fafafa',
     padding: '.5rem',
     lineHeight: 1.5,
-    overflowX: 'scroll'
+    overflowX: 'scroll',
+    margin: '20px 0',
+    backgroundColor: '#fdf6e3'
   };
 
   return _react2.default.createElement(

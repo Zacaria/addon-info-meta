@@ -16,11 +16,13 @@ export function H1(props) {
         margin: "25px 0 0 0",
         padding: 0,
         fontSize: '40px',
+        fontWeight: 500,
     };
+
     return (
         <h1 id={props.id} style={styles}>
             {props.children}
-          <hr />
+            <HR />
         </h1>
     );
 }
@@ -33,11 +35,13 @@ export function H2(props) {
         margin: "25px 0 0 0",
         padding: 0,
         fontSize: '30px',
+        fontWeight: 500,
+        ...props.style,
     };
     return (
         <h2 id={props.id} style={styles}>
             {props.children}
-          <hr />
+            <HR style={props.hrStyle} />
         </h2>
     );
 }
@@ -50,7 +54,7 @@ export function H3(props) {
         margin: "15px 0 15px 0",
         padding: 0,
         fontSize: '22px',
-        textTransform: 'uppercase',
+        fontWeight: 500
     };
     return (
         <h3 id={props.id} style={styles}>
@@ -67,6 +71,7 @@ export function H4(props) {
         margin: "15px 0 15px 0",
         padding: 0,
         fontSize: '20px',
+        fontWeight: 500
     };
     return (
         <h4 id={props.id} style={styles}>
@@ -100,6 +105,7 @@ export function H6(props) {
         margin: "15px 0 15px 0",
         padding: 0,
         fontSize: '18px',
+        fontWeight: 500
     };
     return (
         <h6 id={props.id} style={styles}>
@@ -110,3 +116,19 @@ export function H6(props) {
 
 H6.defaultProps = defaultProps;
 H6.propTypes = propTypes;
+
+export function HR(props) {
+    const styles = {
+        margin: '15px 0px',
+        padding: 0,
+        border: 0,
+        borderTop: '1px solid #f0f4f8',
+        ...props.style
+    };
+    return (
+        <hr style={styles}/>
+    );
+}
+
+HR.defaultProps = defaultProps;
+HR.propTypes = propTypes;

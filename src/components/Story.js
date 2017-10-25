@@ -3,14 +3,18 @@ import PropTypes from 'prop-types';
 import global from 'global';
 import { baseFonts } from '@storybook/components';
 import Prism from 'prismjs';
-import marksy from 'marksy';
-
+import marksy from '../marksy';
 import PropTable from './PropTable';
-
 import reactElementToJSXString from 'react-element-to-jsx-string';
+import * as ReactDOMServer from "react-dom/server";
+import { H2, H3 } from './markdown';
+
+import addons from '@storybook/addons';
 
 global.STORYBOOK_REACT_CLASSES = global.STORYBOOK_REACT_CLASSES || [];
 const STORYBOOK_REACT_CLASSES = global.STORYBOOK_REACT_CLASSES;
+
+const overlay = false;
 
 const stylesheet = {
   link: {
@@ -104,7 +108,7 @@ export default class Story extends React.Component {
       open: false,
       stylesheet: this.props.styles(JSON.parse(JSON.stringify(stylesheet))),
     };
-    this.marksy = marksy(this.props.marksyConf);
+    this.marksy = marksy;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -170,9 +174,9 @@ export default class Story extends React.Component {
     return (
       <div>
         <div style={this.state.stylesheet.children}>{this.props.children}</div>
-        <a style={linkStyle} onClick={openOverlay} role="button" tabIndex="0">
+        {overlay && <a style={linkStyle} onClick={openOverlay} role="button" tabIndex="0">
           Show Info
-        </a>
+        </a>}
         <div style={infoStyle}>
           <a style={linkStyle} onClick={closeOverlay} role="button" tabIndex="0">
             ×
@@ -195,6 +199,8 @@ export default class Story extends React.Component {
     if (!this.props.context || !this.props.showHeader) {
       return null;
     }
+
+    if (!overlay) return null;
 
     return (
       <div style={this.state.stylesheet.header.body}>
@@ -227,7 +233,15 @@ export default class Story extends React.Component {
       padding = matches[0].length;
     }
     const source = lines.map(s => s.slice(padding)).join('\n');
-    return <div style={this.state.stylesheet.infoContent}>{this.marksy(source).tree}</div>;
+
+    const returnVal = <div style={this.state.stylesheet.infoContent}>{this.marksy(source).tree}</div>;
+
+    const channel = addons.getChannel();
+    channel.emit('storybooks/meta/description', { htmlToDisplay: ReactDOMServer.renderToString(returnVal) });
+
+    if (!overlay) return null;
+
+    return returnVal;
   }
 
   _getComponentDescription() {
@@ -241,14 +255,12 @@ export default class Story extends React.Component {
       });
     }
 
+    if (!overlay) return null;
+
     return retDiv;
   }
 
   _getSourceCode() {
-    if (!this.props.showSource) {
-      return null;
-    }
-
     const stringifiedJSX = reactElementToJSXString(this.props.children, {
         showDefaultProps: false,
         showFunctions: false,
@@ -256,9 +268,8 @@ export default class Story extends React.Component {
         maxInlineAttributesLineLength: 120
     });
 
-    return (
-      <div>
-        <h1 style={this.state.stylesheet.source.h1}>Story Source</h1>
+    const SourceCode = (
+        <div>
           <pre className="language-jsx">
             <code
                 className="language-jsx"
@@ -267,6 +278,18 @@ export default class Story extends React.Component {
                 }}
             />
           </pre>
+        </div>
+    );
+
+    const channel = addons.getChannel();
+    channel.emit('storybooks/meta/sourceCode', { htmlToDisplay: ReactDOMServer.renderToString(SourceCode) });
+
+    if (!overlay) return null;
+
+    return (
+      <div>
+        <H2>Story Source</H2>
+        {SourceCode}
       </div>
     );
   }
@@ -322,9 +345,9 @@ export default class Story extends React.Component {
     const { maxPropObjectKeys, maxPropArrayLength, maxPropStringLength } = this.props;
     const propTables = array.map(type => (
       <div key={type.displayName || type.name}>
-        <h2 style={this.state.stylesheet.propTableHead}>
-          "{type.displayName || type.name}" Component
-        </h2>
+        <H3>
+          {type.displayName || type.name} Component
+        </H3>
         <PropTable
           type={type}
           maxPropObjectKeys={maxPropObjectKeys}
@@ -338,11 +361,16 @@ export default class Story extends React.Component {
       return null;
     }
 
+    const channel = addons.getChannel();
+    channel.emit('storybooks/meta/propTypes', { htmlToDisplay: ReactDOMServer.renderToString(propTables) });
+
+    if (!overlay) return null;
+
     return (
-      <div>
-        <h1 style={this.state.stylesheet.source.h1}>Prop Types</h1>
-        {propTables}
-      </div>
+        <div>
+          <H2>Prop Types</H2>
+            {propTables}
+        </div>
     );
   }
 

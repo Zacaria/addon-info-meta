@@ -6,16 +6,18 @@ export class Code extends React.Component {
     const codeStyle = {
       fontFamily: 'Menlo, Monaco, "Courier New", monospace',
       backgroundColor: '#fafafa',
-      marginBottom: 15
+      marginBottom: 15,
+      fontSize: 14
     };
 
     const preStyle = {
       fontFamily: 'Menlo, Monaco, "Courier New", monospace',
-      backgroundColor: '#fafafa',
       padding: '.5rem',
       lineHeight: 1.5,
       overflowX: 'scroll',
-      display: 'inline'
+      display: 'inline',
+      backgroundColor: '#fdf6e3',
+      margin: '20px 0'
     };
 
     const className = this.props.language ? `language-${this.props.language}` : '';
@@ -43,10 +45,11 @@ export function Pre(props) {
   const style = {
     fontSize: '.88em',
     fontFamily: 'Menlo, Monaco, "Courier New", monospace',
-    backgroundColor: '#fafafa',
     padding: '.5rem',
     lineHeight: 1.5,
     overflowX: 'scroll',
+    margin: '20px 0',
+    backgroundColor: '#fdf6e3'
   };
 
   return <pre style={style}>{props.children}</pre>;

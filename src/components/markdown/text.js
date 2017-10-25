@@ -7,7 +7,7 @@ const propTypes = { children: PropTypes.node };
 
 export function P(props) {
     const style = {
-        marginBottom: 8,
+        margin: '0 0 8px',
         fontSize: '15px',
     };
     return <p style={style}>{props.children}</p>;

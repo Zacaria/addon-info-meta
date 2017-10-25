@@ -74,40 +74,11 @@ var _solarized = require('./markdown/solarized');
 
 var _solarized2 = _interopRequireDefault(_solarized);
 
-var _markdown = require('../components/markdown');
-
-var _prismjs = require('prismjs');
-
-var _prismjs2 = _interopRequireDefault(_prismjs);
-
-require('prismjs/components/prism-jsx.min');
-
-var _marksy = require('marksy');
+var _marksy = require('../marksy');
 
 var _marksy2 = _interopRequireDefault(_marksy);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var defaultMarksyConf = {
-    createElement: _react2.default.createElement,
-    highlight: function highlight(lang, code) {
-        return _prismjs2.default.highlight(code, _prismjs2.default.languages[lang]);
-    },
-
-    elements: {
-        h1: _markdown.H1,
-        h2: _markdown.H2,
-        h3: _markdown.H3,
-        h4: _markdown.H4,
-        h5: _markdown.H5,
-        h6: _markdown.H6,
-        p: _markdown.P,
-        a: _markdown.A,
-        li: _markdown.LI,
-        ul: _markdown.UL
-    }
-};
-var marksy = (0, _marksy2.default)(defaultMarksyConf);
 
 var PropTypesMap = new _map2.default();
 
@@ -120,7 +91,6 @@ var PropTypesMap = new _map2.default();
 
 var stylesheet = {
     propTable: {
-        marginLeft: -10,
         borderSpacing: '10px 5px',
         borderCollapse: 'collapse'
     }
@@ -163,7 +133,7 @@ var ShowMore = function (_React$Component) {
         var _this = (0, _possibleConstructorReturn3.default)(this, (ShowMore.__proto__ || (0, _getPrototypeOf2.default)(ShowMore)).call(this, props));
 
         _this.state = {
-            showMore: _this.props.showByDefault
+            showMore: true
         };
 
         _this.handleClick = _this.handleClick.bind(_this);
@@ -466,27 +436,27 @@ function PropTable(props) {
                 null,
                 _react2.default.createElement(
                     'th',
-                    { style: { paddingRight: 10 } },
+                    { style: { paddingRight: 10, textAlign: 'left' } },
                     'name'
                 ),
                 _react2.default.createElement(
                     'th',
-                    { style: { paddingRight: 10 } },
+                    { style: { paddingRight: 10, textAlign: 'left' } },
                     'type'
                 ),
                 _react2.default.createElement(
                     'th',
-                    { style: { paddingRight: 10 } },
+                    { style: { paddingRight: 10, textAlign: 'left' } },
                     'required'
                 ),
                 _react2.default.createElement(
                     'th',
-                    { style: { paddingRight: 10 } },
+                    { style: { paddingRight: 10, textAlign: 'left' } },
                     'default'
                 ),
                 _react2.default.createElement(
                     'th',
-                    null,
+                    { style: { textAlign: 'left' } },
                     'description'
                 )
             )
@@ -521,7 +491,7 @@ function PropTable(props) {
                     _react2.default.createElement(
                         Td,
                         { style: { paddingRight: 0 } },
-                        marksy(prop.description).tree
+                        (0, _marksy2.default)(prop.description).tree
                     )
                 );
             })
