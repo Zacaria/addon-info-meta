@@ -524,7 +524,13 @@ var Story = function (_React$Component) {
       }
 
       var channel = _addons2.default.getChannel();
-      channel.emit('storybooks/meta/propTypes', { htmlToDisplay: ReactDOMServer.renderToString(propTables) });
+      channel.emit('storybooks/meta/propTypes', {
+        htmlToDisplay: ReactDOMServer.renderToString(_react2.default.createElement(
+          'div',
+          null,
+          propTables
+        ))
+      });
 
       if (!overlay) return null;
 

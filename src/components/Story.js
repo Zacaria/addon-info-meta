@@ -362,7 +362,12 @@ export default class Story extends React.Component {
     }
 
     const channel = addons.getChannel();
-    channel.emit('storybooks/meta/propTypes', { htmlToDisplay: ReactDOMServer.renderToString(propTables) });
+    channel.emit(
+        'storybooks/meta/propTypes',
+        {
+          htmlToDisplay: ReactDOMServer.renderToString(<div>{propTables}</div>)
+        }
+    );
 
     if (!overlay) return null;
 
