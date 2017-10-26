@@ -2,11 +2,12 @@ import React from 'react';
 import { H1, H2, H3, H4, H5, H6, Code, P, UL, A, LI, Pre } from './components/markdown';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-jsx.min';
+import 'prismjs/components/prism-markdown.min';
 import marksy from 'marksy';
 
 const config = {
     createElement: React.createElement,
-    highlight(lang, code) {
+    highlight(lang = 'markdown', code) {
         return Prism.highlight(code, Prism.languages[lang]);
     },
     elements: {

@@ -16,6 +16,8 @@ var _prismjs2 = _interopRequireDefault(_prismjs);
 
 require('prismjs/components/prism-jsx.min');
 
+require('prismjs/components/prism-markdown.min');
+
 var _marksy = require('marksy');
 
 var _marksy2 = _interopRequireDefault(_marksy);
@@ -24,7 +26,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var config = {
     createElement: _react2.default.createElement,
-    highlight: function highlight(lang, code) {
+    highlight: function highlight() {
+        var lang = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'markdown';
+        var code = arguments[1];
+
         return _prismjs2.default.highlight(code, _prismjs2.default.languages[lang]);
     },
 
