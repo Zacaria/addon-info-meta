@@ -32,15 +32,19 @@ const propsFromPropTypes = component => {
     .filter(name => name !== 'componentClass');
 
   propNames.forEach(propName => {
-    const typeName = propTypes[propName].__type;
-    const required = propTypes[propName].__required ? 'yes' : null;
+    let propType = propTypes[propName];
+    if (propTypes[propName].name === 'validate') { // prop-types-extra support
+        propType = propType.propType;
+    }
+    const typeName = propType.__type;
+    const required = propType.__required ? 'yes' : null;
     const propInfo = {
         name: propName,
         type: typeName || 'other',
         required,
         defaultValue: defaultProps[propName],
         description: _.get(metaProps, [propName, 'description'], ''),
-        jsonDoc: propTypes[propName].__jsonDoc
+        jsonDoc: propType.__jsonDoc
     };
 
     props.push(propInfo);

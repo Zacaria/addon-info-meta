@@ -107,15 +107,20 @@ var propsFromPropTypes = function propsFromPropTypes(component) {
     });
 
     propNames.forEach(function (propName) {
-        var typeName = propTypes[propName].__type;
-        var required = propTypes[propName].__required ? 'yes' : null;
+        var propType = propTypes[propName];
+        if (propTypes[propName].name === 'validate') {
+            // prop-types-extra support
+            propType = propType.propType;
+        }
+        var typeName = propType.__type;
+        var required = propType.__required ? 'yes' : null;
         var propInfo = {
             name: propName,
             type: typeName || 'other',
             required: required,
             defaultValue: defaultProps[propName],
             description: _lodash2.default.get(metaProps, [propName, 'description'], ''),
-            jsonDoc: propTypes[propName].__jsonDoc
+            jsonDoc: propType.__jsonDoc
         };
 
         props.push(propInfo);
