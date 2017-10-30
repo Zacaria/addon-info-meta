@@ -237,10 +237,15 @@ export default class Story extends React.Component {
     const returnVal = <div style={this.state.stylesheet.infoContent}>{this.marksy(source).tree}</div>;
 
     const channel = addons.getChannel();
-    channel.emit('storybooks/meta/description', { htmlToDisplay: ReactDOMServer.renderToString(returnVal) });
+    channel.emit(
+        'storybooks/meta/description',
+        {
+          htmlToDisplay: ReactDOMServer.renderToString(returnVal),
+          empty: !returnVal,
+        }
+    );
 
     if (!overlay) return null;
-
     return returnVal;
   }
 

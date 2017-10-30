@@ -374,10 +374,12 @@ var Story = function (_React$Component) {
       );
 
       var channel = _addons2.default.getChannel();
-      channel.emit('storybooks/meta/description', { htmlToDisplay: ReactDOMServer.renderToString(returnVal) });
+      channel.emit('storybooks/meta/description', {
+        htmlToDisplay: ReactDOMServer.renderToString(returnVal),
+        empty: !returnVal
+      });
 
       if (!overlay) return null;
-
       return returnVal;
     }
   }, {
