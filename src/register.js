@@ -147,15 +147,6 @@ addons.register('storybooks/meta/propTypes', (api) => {
     });
 });
 
-addons.register('storybooks/meta/description', (api) => {
-    addons.addPanel('storybooks/meta/description', {
-        title: 'Description',
-        render: () => {
-            return <ChannelWrapper channel={'storybooks/meta/description'} api={api} />
-        }
-    });
-});
-
 addons.register('storybooks/meta/sourceCode', (api) => {
     addons.addPanel('storybooks/meta/sourceCode', {
         title: 'Source Code',
@@ -167,6 +158,15 @@ addons.register('storybooks/meta/sourceCode', (api) => {
                     </div>
                 </ChannelWrapper>
             )
+        }
+    });
+});
+
+addons.register('storybooks/meta/description', (api) => {
+    addons.addPanel('storybooks/meta/description', {
+        title: 'Description',
+        render: () => {
+            return <ChannelWrapper channel={'storybooks/meta/description'} api={api} />
         }
     });
 });

@@ -220,15 +220,6 @@ _addons2.default.register('storybooks/meta/propTypes', function (api) {
     });
 });
 
-_addons2.default.register('storybooks/meta/description', function (api) {
-    _addons2.default.addPanel('storybooks/meta/description', {
-        title: 'Description',
-        render: function render() {
-            return _react2.default.createElement(ChannelWrapper, { channel: 'storybooks/meta/description', api: api });
-        }
-    });
-});
-
 _addons2.default.register('storybooks/meta/sourceCode', function (api) {
     _addons2.default.addPanel('storybooks/meta/sourceCode', {
         title: 'Source Code',
@@ -242,6 +233,15 @@ _addons2.default.register('storybooks/meta/sourceCode', function (api) {
                     'Note: This code is automatically generated and might be not very accurate.'
                 )
             );
+        }
+    });
+});
+
+_addons2.default.register('storybooks/meta/description', function (api) {
+    _addons2.default.addPanel('storybooks/meta/description', {
+        title: 'Description',
+        render: function render() {
+            return _react2.default.createElement(ChannelWrapper, { channel: 'storybooks/meta/description', api: api });
         }
     });
 });

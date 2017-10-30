@@ -9,7 +9,7 @@ import reactElementToJSXString from 'react-element-to-jsx-string';
 import * as ReactDOMServer from "react-dom/server";
 import { H2, H3 } from './markdown';
 
-import addons from '@storybook/addons';
+import addons from '@storybook/addons';;
 
 global.STORYBOOK_REACT_CLASSES = global.STORYBOOK_REACT_CLASSES || [];
 const STORYBOOK_REACT_CLASSES = global.STORYBOOK_REACT_CLASSES;
@@ -211,7 +211,9 @@ export default class Story extends React.Component {
   }
 
   _getInfoContent() {
+    const channel = addons.getChannel();
     if (!this.props.info) {
+      channel.emit('storybooks/meta/description', { empty: true });
       return '';
     }
 
@@ -236,7 +238,6 @@ export default class Story extends React.Component {
 
     const returnVal = <div style={this.state.stylesheet.infoContent}>{this.marksy(source).tree}</div>;
 
-    const channel = addons.getChannel();
     channel.emit(
         'storybooks/meta/description',
         {

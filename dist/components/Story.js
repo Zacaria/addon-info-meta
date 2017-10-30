@@ -92,6 +92,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+;
+
 _global2.default.STORYBOOK_REACT_CLASSES = _global2.default.STORYBOOK_REACT_CLASSES || [];
 var STORYBOOK_REACT_CLASSES = _global2.default.STORYBOOK_REACT_CLASSES;
 
@@ -342,7 +344,9 @@ var Story = function (_React$Component) {
   }, {
     key: '_getInfoContent',
     value: function _getInfoContent() {
+      var channel = _addons2.default.getChannel();
       if (!this.props.info) {
+        channel.emit('storybooks/meta/description', { empty: true });
         return '';
       }
 
@@ -373,7 +377,6 @@ var Story = function (_React$Component) {
         this.marksy(source).tree
       );
 
-      var channel = _addons2.default.getChannel();
       channel.emit('storybooks/meta/description', {
         htmlToDisplay: ReactDOMServer.renderToString(returnVal),
         empty: !returnVal
