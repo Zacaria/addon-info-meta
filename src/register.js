@@ -66,7 +66,8 @@ class ChannelWrapper extends React.Component {
         padding: '0 25px 25px',
         backgroundColor: 'white',
         boxSizing: 'border-box',
-        width: '100%'
+        width: '100%',
+        height: 0, // storybook bugfix - activates panel scroll on firefox
     };
 
     fullScreenStyle = {
