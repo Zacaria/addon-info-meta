@@ -381,7 +381,7 @@ var getTypeNode = function getTypeNode(_ref) {
             {
                 var validators = {};
                 (0, _keys2.default)(propInfo.jsonDoc).forEach(function (validatorType) {
-                    var validatorItems = propInfo.jsonDoc[validatorType];
+                    var validatorItems = _lodash2.default.get(propInfo, ['jsonDoc', validatorType], []);
                     validators[validatorType] = validatorItems.map(function (role) {
                         return propInfo.componentName + '.' + role;
                     });

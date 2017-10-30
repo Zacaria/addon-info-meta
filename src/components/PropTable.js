@@ -230,7 +230,7 @@ const getTypeNode = ({ type, ...propInfo }) => {
       case 'ptExtra-all': {
           const validators = {};
           Object.keys(propInfo.jsonDoc).forEach(validatorType => {
-             const validatorItems = propInfo.jsonDoc[validatorType];
+             const validatorItems = _.get(propInfo, ['jsonDoc', validatorType], []);
              validators[validatorType] = validatorItems.map(role => {
                  return `${propInfo.componentName}.${role}`;
              })
