@@ -507,8 +507,7 @@ var Story = function (_React$Component) {
           _react2.default.createElement(
             _markdown.H3,
             null,
-            type.displayName || type.name,
-            ' Component'
+            type.displayName || type.name
           ),
           _react2.default.createElement(_PropTable2.default, {
             type: type,

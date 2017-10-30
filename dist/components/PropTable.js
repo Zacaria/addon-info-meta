@@ -99,19 +99,16 @@ var stylesheet = {
 var propsFromPropTypes = function propsFromPropTypes(component) {
     var props = [];
 
+    var componentName = component.displayName;
     var propTypes = component.propTypes || {};
     var defaultProps = component.defaultProps || {};
     var metaProps = component.metaProps || {};
-    var propNames = (0, _keys2.default)(propTypes).filter(function (name) {
-        return name !== 'componentClass';
-    });
+    var propNames = (0, _keys2.default)(propTypes);
 
     propNames.forEach(function (propName) {
         var propType = propTypes[propName];
-        if (propTypes[propName].name === 'validate') {
-            // prop-types-extra support
-            propType = propType.propType;
-        }
+        if (propType.name === 'validate') propType = propType.propType;
+        if (propName === 'componentClass') propType.__type = 'node';
         var typeName = propType.__type;
         var required = propType.__required ? 'yes' : null;
         var propInfo = {
@@ -120,7 +117,8 @@ var propsFromPropTypes = function propsFromPropTypes(component) {
             required: required,
             defaultValue: defaultProps[propName],
             description: _lodash2.default.get(metaProps, [propName, 'description'], ''),
-            jsonDoc: propType.__jsonDoc
+            jsonDoc: propType.__jsonDoc,
+            componentName: componentName
         };
 
         props.push(propInfo);
@@ -377,6 +375,31 @@ var getTypeNode = function getTypeNode(_ref) {
                             }
                         })
                     )
+                );
+            }
+        case 'ptExtra-all':
+            {
+                var validators = {};
+                (0, _keys2.default)(propInfo.jsonDoc).forEach(function (validatorType) {
+                    var validatorItems = propInfo.jsonDoc[validatorType];
+                    validators[validatorType] = validatorItems.map(function (role) {
+                        return propInfo.componentName + '.' + role;
+                    });
+                });
+                return _react2.default.createElement(
+                    ShowMore,
+                    {
+                        label: 'node',
+                        showByDefault: true
+                    },
+                    _react2.default.createElement(_reactJsonTree2.default, {
+                        hideRoot: true,
+                        data: validators,
+                        theme: _solarized2.default,
+                        shouldExpandNode: function shouldExpandNode() {
+                            return true;
+                        }
+                    })
                 );
             }
         default:

@@ -346,7 +346,7 @@ export default class Story extends React.Component {
     const propTables = array.map(type => (
       <div key={type.displayName || type.name}>
         <H3>
-          {type.displayName || type.name} Component
+          {type.displayName || type.name}
         </H3>
         <PropTable
           type={type}

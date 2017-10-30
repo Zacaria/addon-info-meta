@@ -25,17 +25,16 @@ const stylesheet = {
 const propsFromPropTypes = component => {
   const props = [];
 
+  const componentName = component.displayName;
   const propTypes = component.propTypes || {};
   const defaultProps = component.defaultProps || {};
   const metaProps = component.metaProps || {};
-  const propNames = Object.keys(propTypes)
-    .filter(name => name !== 'componentClass');
+  const propNames = Object.keys(propTypes);
 
   propNames.forEach(propName => {
     let propType = propTypes[propName];
-    if (propTypes[propName].name === 'validate') { // prop-types-extra support
-        propType = propType.propType;
-    }
+    if (propType.name === 'validate') propType = propType.propType;
+    if (propName === 'componentClass') propType.__type = 'node';
     const typeName = propType.__type;
     const required = propType.__required ? 'yes' : null;
     const propInfo = {
@@ -44,7 +43,8 @@ const propsFromPropTypes = component => {
         required,
         defaultValue: defaultProps[propName],
         description: _.get(metaProps, [propName, 'description'], ''),
-        jsonDoc: propType.__jsonDoc
+        jsonDoc: propType.__jsonDoc,
+        componentName,
     };
 
     props.push(propInfo);
@@ -224,6 +224,28 @@ const getTypeNode = ({ type, ...propInfo }) => {
                           }
                       })}
                   </ul>
+              </ShowMore>
+          )
+      }
+      case 'ptExtra-all': {
+          const validators = {};
+          Object.keys(propInfo.jsonDoc).forEach(validatorType => {
+             const validatorItems = propInfo.jsonDoc[validatorType];
+             validators[validatorType] = validatorItems.map(role => {
+                 return `${propInfo.componentName}.${role}`;
+             })
+          });
+          return (
+              <ShowMore
+                  label="node"
+                  showByDefault
+              >
+                  <JSONTree
+                      hideRoot
+                      data={validators}
+                      theme={solarized}
+                      shouldExpandNode={() => true}
+                  />
               </ShowMore>
           )
       }
