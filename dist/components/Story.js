@@ -4,14 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _from = require('babel-runtime/core-js/array/from');
-
-var _from2 = _interopRequireDefault(_from);
-
-var _map = require('babel-runtime/core-js/map');
-
-var _map2 = _interopRequireDefault(_map);
-
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -91,8 +83,6 @@ var _addons2 = _interopRequireDefault(_addons);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-;
 
 _global2.default.STORYBOOK_REACT_CLASSES = _global2.default.STORYBOOK_REACT_CLASSES || [];
 var STORYBOOK_REACT_CLASSES = _global2.default.STORYBOOK_REACT_CLASSES;
@@ -454,7 +444,7 @@ var Story = function (_React$Component) {
     value: function _getPropTables() {
       var _this4 = this;
 
-      var types = new _map2.default();
+      var types = [];
 
       if (this.props.propTables === null) {
         return null;
@@ -466,7 +456,7 @@ var Story = function (_React$Component) {
 
       if (this.props.propTables) {
         this.props.propTables.forEach(function (type) {
-          types.set(type, true);
+          types.push(type);
         });
       }
 
@@ -487,28 +477,23 @@ var Story = function (_React$Component) {
         ) {
             return;
           }
-        if (children.type && !types.has(children.type)) {
-          types.set(children.type, true);
+        if (children.type && !types.includes(children.type)) {
+          types.push(children.type);
         }
       };
 
       // extract components from children
       extract(this.props.children);
 
-      var array = (0, _from2.default)(types.keys());
-      array.sort(function (a, b) {
-        return (a.displayName || a.name) > (b.displayName || b.name);
-      });
-
       var _props = this.props,
           maxPropObjectKeys = _props.maxPropObjectKeys,
           maxPropArrayLength = _props.maxPropArrayLength,
           maxPropStringLength = _props.maxPropStringLength;
 
-      var propTables = array.map(function (type) {
+      var propTables = types.map(function (type, key) {
         return _react2.default.createElement(
           'div',
-          { key: type.displayName || type.name },
+          { key: key },
           _react2.default.createElement(
             _markdown.H3,
             null,

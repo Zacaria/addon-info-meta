@@ -9,7 +9,7 @@ import reactElementToJSXString from 'react-element-to-jsx-string';
 import * as ReactDOMServer from "react-dom/server";
 import { H2, H3 } from './markdown';
 
-import addons from '@storybook/addons';;
+import addons from '@storybook/addons';
 
 global.STORYBOOK_REACT_CLASSES = global.STORYBOOK_REACT_CLASSES || [];
 const STORYBOOK_REACT_CLASSES = global.STORYBOOK_REACT_CLASSES;
@@ -301,7 +301,7 @@ export default class Story extends React.Component {
   }
 
   _getPropTables() {
-    const types = new Map();
+    const types = [];
 
     if (this.props.propTables === null) {
       return null;
@@ -313,7 +313,7 @@ export default class Story extends React.Component {
 
     if (this.props.propTables) {
       this.props.propTables.forEach(type => {
-        types.set(type, true);
+        types.push(type);
       });
     }
 
@@ -337,20 +337,17 @@ export default class Story extends React.Component {
       ) {
         return;
       }
-      if (children.type && !types.has(children.type)) {
-        types.set(children.type, true);
+      if (children.type && !types.includes(children.type)) {
+        types.push(children.type);
       }
     };
 
     // extract components from children
     extract(this.props.children);
 
-    const array = Array.from(types.keys());
-    array.sort((a, b) => (a.displayName || a.name) > (b.displayName || b.name));
-
     const { maxPropObjectKeys, maxPropArrayLength, maxPropStringLength } = this.props;
-    const propTables = array.map(type => (
-      <div key={type.displayName || type.name}>
+    const propTables = types.map((type, key) => (
+      <div key={key}>
         <H3>
           {type.displayName || type.name}
         </H3>
