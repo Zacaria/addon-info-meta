@@ -27,9 +27,9 @@ function addInfo(storyFn, context, infoOptions) {
   const related = options.related;
   const ux = options.ux;
 
-  const stringToHtml = (string) => {
+  const stringToHtml = string => {
       if (!string) return null;
-      return ReactDOMServer.renderToString(marksy(related).tree);
+      return ReactDOMServer.renderToString(marksy(string).tree);
   };
 
   channel.emit(
